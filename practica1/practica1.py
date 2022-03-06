@@ -1,4 +1,4 @@
-from snmp import consultaSNMP, createRRD,exportToXml,update
+from snmp import consultaSNMP, createRRD,update,graficar
 from bd import DataBase
 import os
 import time
@@ -58,16 +58,32 @@ def agregarAgente():
 def eliminarAgente():
     bd = DataBase(rutaBd)
     bd.crearConexion()
-    tabla = bd.leer("select * from agentes")
+    tabla = bd.leer("select host_ip from agentes")
     bd.imprimirTabla(tabla)
     host = input("Seleccione el agente a eliminar (nombre host/ip): ")
     terminarProcess(host)
     bd.borrar(f'delete from agentes where host_ip="{host}"')
     bd.cerrarConexion()
+    
     if os.path.exists(f'{host}.rrd'):
         os.remove(f'{host}.rrd')
     if os.path.exists(f'{host}.xml'):
         os.remove(f'{host}.xml')
+    
+    if os.path.exists(f'{host}_pcksUni.png'):
+        os.remove(f'{host}_pcksUni.png')
+    if os.path.exists(f'{host}_pcksIP.png'):
+        os.remove(f'{host}_pcksIP.png')
+    if os.path.exists(f'{host}_msgsICMP.png'):
+        os.remove(f'{host}_msgsICMP.png')
+    if os.path.exists(f'{host}_sgmtsIn.png'):
+        os.remove(f'{host}_sgmtsIn.png')
+    if os.path.exists(f'{host}_dtgrmsUDP.png'):
+        os.remove(f'{host}_dtgrmsUDP.png')
+
+    if os.path.exists(f'{host}_reporte.pdf'):
+        os.remove(f'{host}_reporte.pdf')
+
 
 def verifConexion(ip):
     response = os.popen(f'ping -c 1 {ip}').read()
@@ -97,6 +113,17 @@ def terminarProcesses():
             time.sleep(1)
             process.pop(row[0])
 
+def generarGraficas():
+    bd = DataBase(rutaBd)
+    bd.crearConexion()
+    tabla = bd.leer("select host_ip from agentes")
+    bd.imprimirTabla(tabla)
+    host = input("Seleccione el agente a generar reporte (nombre host/ip): ")
+    min = int(input("Ingrese cantidad de minutos a graficar: "))
+    graficar(host,min)
+    
+    bd.cerrarConexion()
+
 if __name__ == '__main__':
     rutaBd = "bd.db"
     process = {}
@@ -116,6 +143,7 @@ if __name__ == '__main__':
             inicio()
         elif opc == 3:
             print("Generar reporte")
+            generarGraficas()
         elif opc == 4:
             print("Hasta pronto")
             terminarProcesses()

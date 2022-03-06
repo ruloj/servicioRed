@@ -56,7 +56,10 @@ def update(host,comunidad):
     
         valor = "N:" + str(total_pcksUni) + ':' + str(total_pcksIP) + ':' + str(total_msgsICMP) + ':' + str(total_sgmtsIn) + ':' + str(total_dtgrmsUDP)
         # print (valor)
-        rrdtool.update(f'{host}.rrd', valor)
+        try:
+            rrdtool.update(f'{host}.rrd', valor)
+        except Exception as e:
+            print()
         rrdtool.dump(f'{host}.rrd',f'{host}.xml')
         time.sleep(1)
 
@@ -73,3 +76,47 @@ def update(host,comunidad):
     1) Datagramas entregados a usuarios UDP  
         1.3.6.1.2.1.7.4.0
 '''
+
+def graficar(host,minutos):
+    tiempo_actual = int(time.time())
+    tiempo_inicial = tiempo_actual - (minutos*60)
+
+    rrdtool.graph( f'{host}_pcksUni.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Paquetes",
+                    "--title=Paquetes unicast que ha recibido una interfaz",
+                    f'DEF:pcksUniIn={host}.rrd:pcksUni:AVERAGE',
+                    "LINE3:pcksUniIn#FF0000:Paquetes unicast recibidos")
+
+    rrdtool.graph( f'{host}_pcksIP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Paquetes",
+                    "--title=Paquetes recibidos a protocolos IPv4 \n (incluyendo los que tienen errores)",
+                    f'DEF:pcksIPIn={host}.rrd:pcksIP:AVERAGE',
+                    "LINE3:pcksIPIn#00FF00:Paquetes IPV4 recibidos")
+
+    rrdtool.graph( f'{host}_msgsICMP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Mensajes",
+                    "--title=Mensajes ICMP echo que ha enviado el agente",
+                    f'DEF:msgsICMPOut={host}.rrd:msgsICMP:AVERAGE',
+                    "LINE3:msgsICMPOut#0000FF:Mensajes ICMP echo enviados")
+
+    rrdtool.graph( f'{host}_sgmtsIn.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Segmentos",
+                    "--title=Segmentos recibidos \n (incluyendo los que se han recibido con errores)",
+                    f'DEF:sgmtsInX={host}.rrd:sgmtsIn:AVERAGE',
+                    "LINE3:sgmtsInX#6C3483:Segmentos recibidos")
+
+    rrdtool.graph( f'{host}_dtgrmsUDP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Datagramas",
+                    "--title=Datagramas entregados a usuarios UDP",
+                    f'DEF:dtgrmsUDPOut={host}.rrd:dtgrmsUDP:AVERAGE',
+                    "LINE3:dtgrmsUDPOut#3498DB:Datagramas enviados")
