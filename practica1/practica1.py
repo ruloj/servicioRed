@@ -121,9 +121,9 @@ def generarGraficas():
     tabla = bd.leer("select host_ip from agentes")
     bd.imprimirTabla(tabla)
     host = input("Seleccione el agente a generar reporte (nombre host/ip): ")
-    #min = int(input("Ingrese cantidad de minutos a graficar: "))
+    min = int(input("Ingrese cantidad de minutos a graficar: "))
     bd.cerrarConexion()
-    #graficar(host,min)
+    graficar(host,min)
     generarReporte(host)
 
 def generarReporte(host):
@@ -161,6 +161,12 @@ def generarReporte(host):
     cvs.drawString(110,702, "Host/IP: " + row[0])
     cvs.line(20,695,580,695)
 
+    # Graficas
+    cvs.drawImage(f'{host}_pcksUni.png', 30, 522, width=265, height=105)        
+    cvs.drawImage(f'{host}_pcksIP.png', 320, 522, width=265, height=105)        
+    cvs.drawImage(f'{host}_msgsICMP.png', 30, 350, width=265, height=105)        
+    cvs.drawImage(f'{host}_sgmtsIn.png', 320, 350, width=265, height=105)        
+    cvs.drawImage(f'{host}_dtgrmsUDP.png', 30, 177, width=265, height=105)            
 
     cvs.save()
 
