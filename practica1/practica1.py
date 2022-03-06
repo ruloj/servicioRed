@@ -18,24 +18,24 @@ def inicio():
     for row in table:
         print("\tAgente:", row[0], " ", end="")
         actualizarRRD(row[0],row[2])
-        # if verifConexion(row[0]):
-        #     print("(UP)")
-        #     numInterfaces = int(consultaSNMP(row[2],row[0],"1.3.6.1.2.1.2.1.0"))
-        #     print("\t\tNúmero de interfaces: ", numInterfaces)
-        #     for i in range(0,numInterfaces):
-        #         descr = consultaSNMP(row[2],row[0],f'1.3.6.1.2.1.2.2.1.2.{(i+1)}')
-        #         if "0x" in descr:
-        #             descr = bytes.fromhex(descr[2:]).decode("ASCII")
-        #         print("\t\t\t",str(i+1),"- ",descr,end=" ")         
-        #         status =  int(consultaSNMP(row[2],row[0],f'1.3.6.1.2.1.2.2.1.7.{(i+1)}'))
-        #         if status == 1:
-        #             print("(UP)")
-        #         elif status == 2:
-        #             print("(DOWN)")
-        #         else:
-        #             print("(TESTING)")
-        # else:
-        #     print("(DOWN)")
+        if verifConexion(row[0]):
+            print("(UP)")
+            numInterfaces = int(consultaSNMP(row[2],row[0],"1.3.6.1.2.1.2.1.0"))
+            print("\t\tNúmero de interfaces: ", numInterfaces)
+            for i in range(0,numInterfaces):
+                descr = consultaSNMP(row[2],row[0],f'1.3.6.1.2.1.2.2.1.2.{(i+1)}')
+                if "0x" in descr:
+                    descr = bytes.fromhex(descr[2:]).decode("ASCII")
+                print("\t\t\t",str(i+1),"- ",descr,end=" ")         
+                status =  int(consultaSNMP(row[2],row[0],f'1.3.6.1.2.1.2.2.1.7.{(i+1)}'))
+                if status == 1:
+                    print("(UP)")
+                elif status == 2:
+                    print("(DOWN)")
+                else:
+                    print("(TESTING)")
+        else:
+            print("(DOWN)")
     bd.cerrarConexion()
 
 def menu():
@@ -67,24 +67,24 @@ def eliminarAgente():
     bd.borrar(f'delete from agentes where host_ip="{host}"')
     bd.cerrarConexion()
     
-    if os.path.exists(f'{host}.rrd'):
-        os.remove(f'{host}.rrd')
-    if os.path.exists(f'{host}.xml'):
-        os.remove(f'{host}.xml')
+    if os.path.exists(f'rrdFiles/{host}.rrd'):
+        os.remove(f'rrdFiles/{host}.rrd')
+    if os.path.exists(f'rrdFiles/{host}.xml'):
+        os.remove(f'rrdFiles/{host}.xml')
     
-    if os.path.exists(f'{host}_pcksUni.png'):
-        os.remove(f'{host}_pcksUni.png')
-    if os.path.exists(f'{host}_pcksIP.png'):
-        os.remove(f'{host}_pcksIP.png')
-    if os.path.exists(f'{host}_msgsICMP.png'):
-        os.remove(f'{host}_msgsICMP.png')
-    if os.path.exists(f'{host}_sgmtsIn.png'):
-        os.remove(f'{host}_sgmtsIn.png')
-    if os.path.exists(f'{host}_dtgrmsUDP.png'):
-        os.remove(f'{host}_dtgrmsUDP.png')
+    if os.path.exists(f'graficas/{host}_pcksUni.png'):
+        os.remove(f'graficas/{host}_pcksUni.png')
+    if os.path.exists(f'graficas/{host}_pcksIP.png'):
+        os.remove(f'graficas/{host}_pcksIP.png')
+    if os.path.exists(f'graficas/{host}_msgsICMP.png'):
+        os.remove(f'graficas/{host}_msgsICMP.png')
+    if os.path.exists(f'graficas/{host}_sgmtsIn.png'):
+        os.remove(f'graficas/{host}_sgmtsIn.png')
+    if os.path.exists(f'graficas/{host}_dtgrmsUDP.png'):
+        os.remove(f'graficas/{host}_dtgrmsUDP.png')
 
-    if os.path.exists(f'{host}_reporte.pdf'):
-        os.remove(f'{host}_reporte.pdf')
+    if os.path.exists(f'reportes/{host}_reporte.pdf'):
+        os.remove(f'reportes/{host}_reporte.pdf')
 
 
 def verifConexion(ip):
@@ -131,7 +131,7 @@ def generarReporte(host):
     bd.crearConexion()
     row = bd.leer(f"select * from agentes where host_ip='{host}'").fetchone()
     
-    cvs = canvas.Canvas(f"{host}_reporte.pdf", pagesize=letter)
+    cvs = canvas.Canvas(f"reportes/{host}_reporte.pdf", pagesize=letter)
     cvs.setLineWidth(.3)
     cvs.setFont('Helvetica', 14)
     
@@ -162,11 +162,11 @@ def generarReporte(host):
     cvs.line(20,695,580,695)
 
     # Graficas
-    cvs.drawImage(f'{host}_pcksUni.png', 30, 522, width=265, height=105)        
-    cvs.drawImage(f'{host}_pcksIP.png', 320, 522, width=265, height=105)        
-    cvs.drawImage(f'{host}_msgsICMP.png', 30, 350, width=265, height=105)        
-    cvs.drawImage(f'{host}_sgmtsIn.png', 320, 350, width=265, height=105)        
-    cvs.drawImage(f'{host}_dtgrmsUDP.png', 30, 177, width=265, height=105)            
+    cvs.drawImage(f'graficas/{host}_pcksUni.png', 30, 522, width=265, height=105)        
+    cvs.drawImage(f'graficas/{host}_pcksIP.png', 320, 522, width=265, height=105)        
+    cvs.drawImage(f'graficas/{host}_msgsICMP.png', 30, 350, width=265, height=105)        
+    cvs.drawImage(f'graficas/{host}_sgmtsIn.png', 320, 350, width=265, height=105)        
+    cvs.drawImage(f'graficas/{host}_dtgrmsUDP.png', 30, 177, width=265, height=105)            
 
     cvs.save()
 
