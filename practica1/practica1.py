@@ -1,8 +1,10 @@
-from snmp import consultaSNMP, createRRD,update,graficar
+from snmp import consultaSNMP, consultaSNMPAll, createRRD,update,graficar
 from bd import DataBase
 import os
 import time
 from multiprocessing import Process
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 def inicio():
     print("\n------------------------------")
@@ -119,10 +121,49 @@ def generarGraficas():
     tabla = bd.leer("select host_ip from agentes")
     bd.imprimirTabla(tabla)
     host = input("Seleccione el agente a generar reporte (nombre host/ip): ")
-    min = int(input("Ingrese cantidad de minutos a graficar: "))
-    graficar(host,min)
-    
+    #min = int(input("Ingrese cantidad de minutos a graficar: "))
     bd.cerrarConexion()
+    #graficar(host,min)
+    generarReporte(host)
+
+def generarReporte(host):
+    bd = DataBase(rutaBd)
+    bd.crearConexion()
+    row = bd.leer(f"select * from agentes where host_ip='{host}'").fetchone()
+    
+    cvs = canvas.Canvas(f"{host}_reporte.pdf", pagesize=letter)
+    cvs.setLineWidth(.3)
+    cvs.setFont('Helvetica', 14)
+    
+    # Encabezado
+    # infoOS
+    info = consultaSNMPAll(row[2],host,"1.3.6.1.2.1.1.1.0")
+    if "Ubuntu" in info:
+        cvs.drawImage("imgs/ubuntu-logo.png", 30, 705, width=65, height=65)        
+    elif "Windows" in info:
+        cvs.drawImage("imgs/windows_logo.png", 30, 705, width=65, height=65)        
+    aux = int((len(info)/2))
+    cvs.drawString(110,765,info[:aux])
+    cvs.drawString(110,750,info[aux:])
+    cvs.setFont('Helvetica', 11)
+    # Ubicación
+    info = consultaSNMPAll(row[2],host,"1.3.6.1.2.1.1.6.0")
+    info = info.split("=")
+    cvs.drawString(110,732, "Ubicación: " + info[1])
+    # Número de interfaces
+    info = consultaSNMP(row[2],host,"1.3.6.1.2.1.2..1.0")
+    cvs.drawString(300,732, "Num. de interfaces de red: " + info)
+    # Tiempo de actividad
+    info = str(int(consultaSNMP(row[2],host,"1.3.6.1.2.1.1.3.0"))/100)
+    cvs.drawString(110,718, "Tiempo Activo: " + info + " s")
+    # Comunidad e IP
+    cvs.drawString(300,718, "Comunidad: " + row[2])
+    cvs.drawString(110,702, "Host/IP: " + row[0])
+    cvs.line(20,695,580,695)
+
+
+    cvs.save()
+
 
 if __name__ == '__main__':
     rutaBd = "bd.db"
