@@ -46,7 +46,7 @@ def update(host,comunidad):
                         '1.3.6.1.2.1.4.3.0'))
         total_msgsICMP = int(
             consultaSNMP(comunidad,host,
-                        '1.3.6.1.2.1.5.14.0'))
+                        '1.3.6.1.2.1.5.21.0'))
         total_sgmtsIn = int(
             consultaSNMP(comunidad,host,
                         '1.3.6.1.2.1.6.10.0'))
@@ -55,7 +55,7 @@ def update(host,comunidad):
                         '1.3.6.1.2.1.7.4.0'))
     
         valor = "N:" + str(total_pcksUni) + ':' + str(total_pcksIP) + ':' + str(total_msgsICMP) + ':' + str(total_sgmtsIn) + ':' + str(total_dtgrmsUDP)
-        print (valor)
+        # print (valor)
         rrdtool.update(f'{host}.rrd', valor)
         rrdtool.dump(f'{host}.rrd',f'{host}.xml')
         time.sleep(1)
@@ -67,7 +67,7 @@ def update(host,comunidad):
     1) Paquetes recibidos a protocolos IPv4, incluyendo los que tienen errores. 
         1.3.6.1.2.1.4.3.0
     1) Mensajes ICMP echo que ha enviado el agente 
-        1.3.6.1.2.1.5.14.0
+        1.3.6.1.2.1.5.21.0
     1) Segmentos recibidos, incluyendo los que se han recibido con errores. 
         1.3.6.1.2.1.6.10.0
     1) Datagramas entregados a usuarios UDP  

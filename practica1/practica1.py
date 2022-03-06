@@ -1,9 +1,8 @@
 from snmp import consultaSNMP, createRRD,exportToXml,update
 from bd import DataBase
 import os
-import threading
-
-rutaBd = "bd.db"
+import time
+from multiprocessing import Process
 
 def inicio():
     print("\n------------------------------")
@@ -16,7 +15,7 @@ def inicio():
     table = bd.leer("select * from agentes")
     for row in table:
         print("\tAgente:", row[0], " ", end="")
-        #actualizarRRD(row[0],row[2])
+        actualizarRRD(row[0],row[2])
         # if verifConexion(row[0]):
         #     print("(UP)")
         #     numInterfaces = int(consultaSNMP(row[2],row[0],"1.3.6.1.2.1.2.1.0"))
@@ -62,6 +61,7 @@ def eliminarAgente():
     tabla = bd.leer("select * from agentes")
     bd.imprimirTabla(tabla)
     host = input("Seleccione el agente a eliminar (nombre host/ip): ")
+    terminarProcess(host)
     bd.borrar(f'delete from agentes where host_ip="{host}"')
     bd.cerrarConexion()
     if os.path.exists(f'{host}.rrd'):
@@ -78,12 +78,28 @@ def verifConexion(ip):
         return False
 
 def actualizarRRD(host,comunidad):
-    hilo = threading.Thread(target=update, 
-                            args=(host,comunidad))
-    hilo.start()
+    if host not in process:
+        p = Process(name=host,target=update, args=(host,comunidad))
+        process[host] = p
+        process[host].start()
 
+def terminarProcess(host):
+    process[host].terminate()
+    process.pop(host)
+    
+def terminarProcesses():
+    bd = DataBase(rutaBd)
+    bd.crearConexion()
+    table = bd.leer("select * from agentes")
+    for row in table:
+        if verifConexion(row[0]):    
+            process[row[0]].terminate()
+            time.sleep(1)
+            process.pop(row[0])
 
 if __name__ == '__main__':
+    rutaBd = "bd.db"
+    process = {}
     inicio()
     opc = 0
     while opc != 4:
@@ -102,6 +118,7 @@ if __name__ == '__main__':
             print("Generar reporte")
         elif opc == 4:
             print("Hasta pronto")
+            terminarProcesses()
         else:
             print("Opción invalida")
 
