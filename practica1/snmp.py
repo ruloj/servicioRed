@@ -59,6 +59,10 @@ def update(host,comunidad):
         total_pcksUni = int(
             consultaSNMP(comunidad,host,
                         '1.3.6.1.2.1.2.2.1.11.1'))
+        if total_pcksUni == 0: # Cambiar de interfaz en windows
+            total_pcksUni = int(
+                    consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.2.2.1.11.18'))
         total_pcksIP = int(
             consultaSNMP(comunidad,host,
                         '1.3.6.1.2.1.4.3.0'))
