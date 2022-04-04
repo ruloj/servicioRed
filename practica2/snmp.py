@@ -1,0 +1,187 @@
+from pysnmp.hlapi import *
+import rrdtool
+import time
+
+def consultaSNMP(comunidad,host,oid):
+    errorIndication, errorStatus, errorIndex, varBinds = next(
+        getCmd(SnmpEngine(),
+               CommunityData(comunidad),
+               UdpTransportTarget((host, 161)),
+               ContextData(),
+               ObjectType(ObjectIdentity(oid))))
+
+    if errorIndication:
+        print(errorIndication)
+    elif errorStatus:
+        print('%s at %s' % (errorStatus.prettyPrint(),errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+    else:
+        for varBind in varBinds:
+            varB=(' = '.join([x.prettyPrint() for x in varBind]))
+            resultado= varB.split()[2]
+    return resultado
+
+def consultaSNMPAll(comunidad,host,oid):
+    errorIndication, errorStatus, errorIndex, varBinds = next(
+        getCmd(SnmpEngine(),
+               CommunityData(comunidad),
+               UdpTransportTarget((host, 161)),
+               ContextData(),
+               ObjectType(ObjectIdentity(oid))))
+
+    if errorIndication:
+        print(errorIndication)
+    elif errorStatus:
+        print('%s at %s' % (errorStatus.prettyPrint(),errorIndex and varBinds[int(errorIndex) - 1][0] or '?'))
+    else:
+        for varBind in varBinds:
+            varB=(' = '.join([x.prettyPrint() for x in varBind]))
+            resultado= varB
+    return resultado
+
+def createRRD(nombre):
+    ret = rrdtool.create(f'rrdFiles/{nombre}.rrd',
+                        "--start",'N',
+                        "--step",'60',
+                        "DS:pcksUni:COUNTER:120:U:U",
+                        "DS:pcksIP:COUNTER:120:U:U",
+                        "DS:msgsICMP:COUNTER:120:U:U",
+                        "DS:sgmtsIn:COUNTER:120:U:U",
+                        "DS:dtgrmsUDP:COUNTER:120:U:U",
+                        "RRA:AVERAGE:0.5:1:24")
+    if ret:
+        print (rrdtool.error())
+
+def exportToXml(nombre):
+    rrdtool.dump(f'{nombre}.rrd',f'{nombre}.xml')
+
+def update(host,comunidad):
+    while 1:
+        total_pcksUni = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.2.2.1.11.1'))
+        if total_pcksUni == 0: # Cambiar de interfaz en windows
+            total_pcksUni = int(
+                    consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.2.2.1.11.18'))
+        total_pcksIP = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.4.3.0'))
+        total_msgsICMP = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.5.21.0'))
+        total_sgmtsIn = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.6.10.0'))
+        total_dtgrmsUDP = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.7.4.0'))
+    
+        valor = "N:" + str(total_pcksUni) + ':' + str(total_pcksIP) + ':' + str(total_msgsICMP) + ':' + str(total_sgmtsIn) + ':' + str(total_dtgrmsUDP)
+        # print (valor)
+        try:
+            rrdtool.update(f'rrdFiles/{host}.rrd', valor)
+        except Exception as e:
+            print()
+        rrdtool.dump(f'rrdFiles/{host}.rrd',f'rrdFiles/{host}.xml')
+        time.sleep(.25)
+
+
+'''
+    1) Paquetes unicast que ha recibido una interfaz  
+        1.3.6.1.2.1.2.2.1.11.1
+    1) Paquetes recibidos a protocolos IPv4, incluyendo los que tienen errores. 
+        1.3.6.1.2.1.4.3.0
+    1) Mensajes ICMP echo que ha enviado el agente 
+        1.3.6.1.2.1.5.21.0
+    1) Segmentos recibidos, incluyendo los que se han recibido con errores. 
+        1.3.6.1.2.1.6.10.0
+    1) Datagramas entregados a usuarios UDP  
+        1.3.6.1.2.1.7.4.0
+'''
+
+def graficar(host,minutos):
+    tiempo_actual = int(time.time())
+    tiempo_inicial = tiempo_actual - (minutos*60)
+
+    rrdtool.graph( f'graficas/{host}_pcksUni.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Paquetes",
+                    "--title=Paquetes unicast que ha recibido una interfaz",
+                    f'DEF:pcksUniIn=rrdFiles/{host}.rrd:pcksUni:AVERAGE',
+                    "LINE3:pcksUniIn#FF0000:Paquetes unicast recibidos")
+
+    rrdtool.graph( f'graficas/{host}_pcksIP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Paquetes",
+                    "--title=Paquetes recibidos a protocolos IPv4 \n (incluyendo los que tienen errores)",
+                    f'DEF:pcksIPIn=rrdFiles/{host}.rrd:pcksIP:AVERAGE',
+                    "LINE3:pcksIPIn#00FF00:Paquetes IPV4 recibidos")
+
+    rrdtool.graph( f'graficas/{host}_msgsICMP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Mensajes",
+                    "--title=Mensajes ICMP echo que ha enviado el agente",
+                    f'DEF:msgsICMPOut=rrdFiles/{host}.rrd:msgsICMP:AVERAGE',
+                    "LINE3:msgsICMPOut#0000FF:Mensajes ICMP echo enviados")
+
+    rrdtool.graph( f'graficas/{host}_sgmtsIn.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Segmentos",
+                    "--title=Segmentos recibidos \n (incluyendo los que se han recibido con errores)",
+                    f'DEF:sgmtsInX=rrdFiles/{host}.rrd:sgmtsIn:AVERAGE',
+                    "LINE3:sgmtsInX#6C3483:Segmentos recibidos")
+
+    rrdtool.graph( f'graficas/{host}_dtgrmsUDP.png',
+                    "--start",str(tiempo_inicial),
+                    "--end","N",
+                    "--vertical-label=Datagramas",
+                    "--title=Datagramas entregados a usuarios UDP",
+                    f'DEF:dtgrmsUDPOut=rrdFiles/{host}.rrd:dtgrmsUDP:AVERAGE',
+                    "LINE3:dtgrmsUDPOut#3498DB:Datagramas enviados")
+
+
+
+# PRACTICA 2 
+
+def createRRD_SSH(nombre):
+    ret = rrdtool.create(f'rrdFiles/{nombre}.rrd',
+                        "--start",'N',
+                        "--step",'60',
+                        "DS:segTCP_IN:COUNTER:120:U:U",
+                        "DS:segTCP_out:COUNTER:120:U:U",
+                        "RRA:AVERAGE:0.5:1:72")
+    if ret:
+        print (rrdtool.error())
+
+def update_SSH(host,comunidad):
+    while 1:
+        total_segIN = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.6.10.0'))
+        total_segOut = int(
+            consultaSNMP(comunidad,host,
+                        '1.3.6.1.2.1.6.11.0'))
+    
+        valor = "N:" + str(total_segIN) + ':' + str(total_segOut)
+        # print (valor)
+        try:
+            rrdtool.update(f'rrdFiles/{host}.rrd', valor)
+        except Exception as e:
+            print()
+        rrdtool.dump(f'rrdFiles/{host}.rrd',f'rrdFiles/{host}.xml')
+        time.sleep(.25)
+
+def fetchSSH(host,tiempo_inicial,tiempo_final):
+    result = rrdtool.fetch(f'rrdFiles/{host}.rrd', "AVERAGE","-s "+str(int(tiempo_inicial)), "-e "+str(int(tiempo_final)))
+    start, end, step = result[0]
+    ds = result[1]
+    rows = result[2]
+    # print(result)
+    # print (ds)
+    print(rows)
+    return rows[0]
+#3/4/2022 21:46
