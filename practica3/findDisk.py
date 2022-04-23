@@ -78,3 +78,4 @@ for i in range(len(total)):
     # print(res, end='\t - \t')
     # res = used[i] * 4.096e-6
     # print(res)
+    #snmpwalk -v2c -c comunidadRulo localhost 1.3.6.1.2.1.25.2.3.1.6
