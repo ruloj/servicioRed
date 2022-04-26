@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rrd SYSTEM "https://oss.oetiker.ch/rrdtool/rrdtool.dtd">
+<!-- Round Robin Database Dump -->
+<rrd>
+	<version>0003</version>
+	<step>120</step> <!-- Seconds -->
+	<lastupdate>1650950408</lastupdate> <!-- 2022-04-26 00:20:08 CDT -->
+
+	<ds>
+		<name> CPUload </name>
+		<type> GAUGE </type>
+		<minimal_heartbeat>60</minimal_heartbeat>
+		<min>0.0000000000e+00</min>
+		<max>1.0000000000e+02</max>
+
+		<!-- PDP Status -->
+		<last_ds>45</last_ds>
+		<value>3.8583170600e+02</value>
+		<unknown_sec> 0 </unknown_sec>
+	</ds>
+
+	<ds>
+		<name> DISK </name>
+		<type> GAUGE </type>
+		<minimal_heartbeat>60</minimal_heartbeat>
+		<min>0.0000000000e+00</min>
+		<max>NaN</max>
+
+		<!-- PDP Status -->
+		<last_ds>13.69</last_ds>
+		<value>1.1664468670e+02</value>
+		<unknown_sec> 0 </unknown_sec>
+	</ds>
+
+	<!-- Round Robin Archives -->
+	<rra>
+		<cf>AVERAGE</cf>
+		<pdp_per_row>1</pdp_per_row> <!-- 120 seconds -->
+
+		<params>
+		<xff>5.0000000000e-01</xff>
+		</params>
+		<cdp_prep>
+			<ds>
+			<primary_value>4.6175857025e+01</primary_value>
+			<secondary_value>0.0000000000e+00</secondary_value>
+			<value>NaN</value>
+			<unknown_datapoints>0</unknown_datapoints>
+			</ds>
+			<ds>
+			<primary_value>1.3690000000e+01</primary_value>
+			<secondary_value>0.0000000000e+00</secondary_value>
+			<value>NaN</value>
+			<unknown_datapoints>0</unknown_datapoints>
+			</ds>
+		</cdp_prep>
+		<database>
+			<!-- 2022-04-25 21:02:00 CDT / 1650938520 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:04:00 CDT / 1650938640 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:06:00 CDT / 1650938760 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:08:00 CDT / 1650938880 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:10:00 CDT / 1650939000 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:12:00 CDT / 1650939120 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:14:00 CDT / 1650939240 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:16:00 CDT / 1650939360 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:18:00 CDT / 1650939480 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:20:00 CDT / 1650939600 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:22:00 CDT / 1650939720 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:24:00 CDT / 1650939840 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:26:00 CDT / 1650939960 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:28:00 CDT / 1650940080 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:30:00 CDT / 1650940200 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:32:00 CDT / 1650940320 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:34:00 CDT / 1650940440 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:36:00 CDT / 1650940560 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:38:00 CDT / 1650940680 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:40:00 CDT / 1650940800 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:42:00 CDT / 1650940920 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:44:00 CDT / 1650941040 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:46:00 CDT / 1650941160 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:48:00 CDT / 1650941280 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:50:00 CDT / 1650941400 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:52:00 CDT / 1650941520 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:54:00 CDT / 1650941640 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:56:00 CDT / 1650941760 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 21:58:00 CDT / 1650941880 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:00:00 CDT / 1650942000 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:02:00 CDT / 1650942120 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:04:00 CDT / 1650942240 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:06:00 CDT / 1650942360 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:08:00 CDT / 1650942480 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:10:00 CDT / 1650942600 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:12:00 CDT / 1650942720 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:14:00 CDT / 1650942840 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:16:00 CDT / 1650942960 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:18:00 CDT / 1650943080 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:20:00 CDT / 1650943200 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:22:00 CDT / 1650943320 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:24:00 CDT / 1650943440 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:26:00 CDT / 1650943560 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:28:00 CDT / 1650943680 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:30:00 CDT / 1650943800 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:32:00 CDT / 1650943920 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:34:00 CDT / 1650944040 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:36:00 CDT / 1650944160 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:38:00 CDT / 1650944280 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:40:00 CDT / 1650944400 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:42:00 CDT / 1650944520 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:44:00 CDT / 1650944640 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:46:00 CDT / 1650944760 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:48:00 CDT / 1650944880 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:50:00 CDT / 1650945000 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:52:00 CDT / 1650945120 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:54:00 CDT / 1650945240 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:56:00 CDT / 1650945360 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 22:58:00 CDT / 1650945480 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:00:00 CDT / 1650945600 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:02:00 CDT / 1650945720 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:04:00 CDT / 1650945840 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:06:00 CDT / 1650945960 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:08:00 CDT / 1650946080 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:10:00 CDT / 1650946200 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:12:00 CDT / 1650946320 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:14:00 CDT / 1650946440 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:16:00 CDT / 1650946560 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:18:00 CDT / 1650946680 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:20:00 CDT / 1650946800 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:22:00 CDT / 1650946920 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:24:00 CDT / 1650947040 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:26:00 CDT / 1650947160 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:28:00 CDT / 1650947280 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:30:00 CDT / 1650947400 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:32:00 CDT / 1650947520 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:34:00 CDT / 1650947640 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:36:00 CDT / 1650947760 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:38:00 CDT / 1650947880 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:40:00 CDT / 1650948000 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:42:00 CDT / 1650948120 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:44:00 CDT / 1650948240 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:46:00 CDT / 1650948360 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:48:00 CDT / 1650948480 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:50:00 CDT / 1650948600 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:52:00 CDT / 1650948720 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:54:00 CDT / 1650948840 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:56:00 CDT / 1650948960 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-25 23:58:00 CDT / 1650949080 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:00:00 CDT / 1650949200 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:02:00 CDT / 1650949320 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:04:00 CDT / 1650949440 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:06:00 CDT / 1650949560 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:08:00 CDT / 1650949680 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:10:00 CDT / 1650949800 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:12:00 CDT / 1650949920 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:14:00 CDT / 1650950040 --> <row><v>NaN</v><v>NaN</v></row>
+			<!-- 2022-04-26 00:16:00 CDT / 1650950160 --> <row><v>3.9015849010e+01</v><v>1.3667789028e+01</v></row>
+			<!-- 2022-04-26 00:18:00 CDT / 1650950280 --> <row><v>3.5082326050e+01</v><v>1.3690000000e+01</v></row>
+			<!-- 2022-04-26 00:20:00 CDT / 1650950400 --> <row><v>4.6175857025e+01</v><v>1.3690000000e+01</v></row>
+		</database>
+	</rra>
+</rrd>
