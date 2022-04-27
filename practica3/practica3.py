@@ -1,5 +1,7 @@
 from snmp import createRRD, updateRRD, graficar
+from multiprocessing import Process
 from bd import DataBase
+import time
 
 def menu():
     print("1) Agregar host/ip")
@@ -10,10 +12,17 @@ def menu():
 def agregarAgente():
     bd = DataBase(rutaBd)
     bd.crearConexion()
+    # table = bd.leer("select * from agentes;")
+    # bd.imprimirTabla(table)
     host = input("Nombre de host/IP: ")
     version = input("Versión SNMP: ")
     comunidad = input("Comunidad: ")
-    bd.insertar(f'insert into agentes (host_ip,version,comunidad) values ("{host}",{version},"{comunidad}")')#Cambiar a update
+    bd.actualizar(f'''update agentes  
+                      set host_ip="{host}", comunidad= "{comunidad}"
+                      where version=1;
+                    ''')
+    # table = bd.leer("select * from agentes;")
+    # bd.imprimirTabla(table)
     bd.cerrarConexion()
     createRRD(host)
 
@@ -25,7 +34,11 @@ def monitorizarAgente():
     host = row[0]
     comunidad = row[2]
     bd.cerrarConexion()
-    updateRRD(host,comunidad)
+    if host not in process:
+        p = Process(name=host,target=updateRRD, args=(host,comunidad))
+        process[host] = p
+        process[host].start()
+    # updateRRD(host,comunidad)
 
 def mandarCorreo():
     bd = DataBase(rutaBd)
@@ -33,10 +46,13 @@ def mandarCorreo():
     tabla = bd.leer("select host_ip from agentes")
     host = tabla.fetchone()[0]
     bd.cerrarConexion()
-    graficar(host,5)
+    while True:
+        graficar(host,10)
+        time.sleep(2*60)
 
 if __name__ == '__main__':
-    rutaBd = "bd.db"
+    process = {}
+    rutaBd = "base.db"
     opc = 0
     while opc != 3:
         opc = menu()
@@ -47,8 +63,9 @@ if __name__ == '__main__':
         elif opc == 2:
             print("Monitorizando agente...")
             monitorizarAgente()
+            mandarCorreo()
         elif opc == 3:
             print("Hasta pronto")
-            mandarCorreo()
         else:
             print("Opcion invalida")
+        print()

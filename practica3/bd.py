@@ -53,15 +53,24 @@ class DataBase:
         for row in table:
             print(row)
 
-# conexion=sqlite3.connect("bd.db")
+# conexion=sqlite3.connect("base.db")
 # try:
-#     # conexion.execute("drop table agentes;")
+#     conexion.execute("drop table agentes;")
 #     print("HOLA")
 #     conexion.execute("""create table agentes (
 #                               host_ip text,
 #                               version integer,
 #                               comunidad text
-#                         )""")
+#                         );""")
+#     conexion.execute("insert into agentes (host_ip,version,comunidad) VALUES ('localhost',1,'comunidadRulo');")
+#     table = conexion.execute("select * from agentes;")
+#     print("(",end="")
+#     for columnName in table.description:
+#         print(columnName[0], end=",")
+#     print(")")
+#     for row in table:
+#         print(row)
+#     conexion.commit()
 #     print("se creo la tabla agentes")                        
 # except Exception as error:
 #     print("Error al borrar")

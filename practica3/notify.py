@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
+import time
 
 COMMASPACE = ', '
 # Define params
@@ -28,6 +29,11 @@ def send_alert_attached(subject):
     fp.close()
     msg.attach(img)
 
+    # fp = open(imgpath+'RAM.png', 'rb')
+    # img = MIMEImage(fp.read())
+    # fp.close()
+    # msg.attach(img)
+
     s = smtplib.SMTP(mailserver)
 
     s.starttls()
@@ -36,3 +42,4 @@ def send_alert_attached(subject):
 
     s.sendmail(mailsender, mailreceip, msg.as_string())
     s.quit()
+    time.sleep(10*60)

@@ -29,7 +29,7 @@ def createRRD(fileName):
                         "--step",'120',
                         "DS:CPUload:GAUGE:60:0:100",
                         "DS:DISK:GAUGE:60:0:U",
-                        # "DS:RAM:GAUGE:60:0:U",
+                        "DS:RAM:GAUGE:60:0:U",
                         "RRA:AVERAGE:0.5:1:100")
     if ret:
         print (rrdtool.error())
@@ -42,8 +42,9 @@ def updateRRD(host,comunidad):
         uBytesDisk = int(consultaSNMP(comunidad,host,'1.3.6.1.2.1.25.2.3.1.4.36'))
         disk =       int(consultaSNMP(comunidad,host,'1.3.6.1.2.1.25.2.3.1.6.36'))
         diskUsed = "{:.2f}".format(disk * uBytesDisk * 1e-9)
-        # ram = int(consultaSNMP('comunidadRulo','localhost','1.3.6.1.2.1.25.3.3.1.2.196608'))
-        valor = "N:" + str(carga_CPU) + ':' + str(diskUsed) #+ ':' + str(ram)
+        ram = int(consultaSNMP('comunidadRulo','localhost','1.3.6.1.4.1.2021.4.5.0'))
+        ramUsed = "{:.2f}".format(ram * 1e-6)
+        valor = "N:" + str(carga_CPU) + ':' + str(diskUsed) + ':' + str(ramUsed)
         # print (valor)
         try:
             rrdtool.update('RRD/'+fileName+'.rrd', valor)
@@ -85,7 +86,7 @@ def graficar(fileName,minutos):
                         "GPRINT:cargaMIN:%6.2lf %SMIN",
                         "GPRINT:cargaSTDEV:%6.2lf %SSTDEV",
                         "GPRINT:cargaLAST:%6.2lf %SLAST" )
-    print (ret)
+    # print (ret)
 
     ultimo_valor=float(ret['print[0]'])
     # if ultimo_valor>4:
@@ -121,10 +122,45 @@ def graficar(fileName,minutos):
                         "GPRINT:usoMIN:%6.2lf %SMIN",
                         "GPRINT:usoSTDEV:%6.2lf %SSTDEV",
                         "GPRINT:usoLAST:%6.2lf %SLAST" )
-    print (ret)
+    # print (ret)
 
     ultimo_valor=float(ret['print[0]'])
     # if ultimo_valor>4:
     # send_alert_attached("Sobrepasa Umbral línea base")
         # print("Sobrepasa Umbral línea base")
 
+    ret = rrdtool.graphv( "GRAPHS/RAM.png",
+                        "--start",str(tiempo_inicial),
+                        "--end",str(tiempo_final),
+                        "--vertical-label=Uso de RAM",
+                        '--lower-limit', '0',
+                        # '--upper-limit', '',
+                        "--title=Uso de la RAM del agente \n Detección de umbrales",
+
+                        "DEF:usoRAM=RRD/"+fileName+".rrd:RAM:AVERAGE",
+
+                        "VDEF:usoMAX=usoRAM,MAXIMUM",
+                        "VDEF:usoMIN=usoRAM,MINIMUM",
+                        "VDEF:usoSTDEV=usoRAM,STDEV",
+                        "VDEF:usoLAST=usoRAM,LAST",
+
+                        "AREA:usoRAM#00FF00:Uso de la RAM",
+
+                        "CDEF:umbral55=usoRAM,1,LT,0,usoRAM,IF",
+                        "AREA:umbral55#DD0000:Uso mayor que 1 GB",
+                        "HRULE:1#FF00FF:Umbral 0 - 1 GB",
+
+                        "CDEF:umbral63=usoRAM,1.5,LT,0,usoRAM,IF",
+                        "AREA:umbral63#450001:Almacenamiento mayor que 1.5 GB",
+                        "HRULE: 1.5#FF0000:Umbral 1 - 1.5 GB",
+
+                        "PRINT:usoLAST:%6.2lf",
+                        "GPRINT:usoMIN:%6.2lf %SMIN",
+                        "GPRINT:usoSTDEV:%6.2lf %SSTDEV",
+                        "GPRINT:usoLAST:%6.2lf %SLAST" )
+    # print (ret)
+
+    ultimo_valor=float(ret['print[0]'])
+    # if ultimo_valor>4:
+    send_alert_attached("Sobrepasa Umbral línea base")
+        # print("Sobrepasa Umbral línea base")
