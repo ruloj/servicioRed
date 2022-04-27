@@ -12,8 +12,6 @@ def menu():
 def agregarAgente():
     bd = DataBase(rutaBd)
     bd.crearConexion()
-    # table = bd.leer("select * from agentes;")
-    # bd.imprimirTabla(table)
     host = input("Nombre de host/IP: ")
     version = input("Versión SNMP: ")
     comunidad = input("Comunidad: ")
@@ -21,8 +19,6 @@ def agregarAgente():
                       set host_ip="{host}", comunidad= "{comunidad}"
                       where version=1;
                     ''')
-    # table = bd.leer("select * from agentes;")
-    # bd.imprimirTabla(table)
     bd.cerrarConexion()
     createRRD(host)
 
@@ -47,7 +43,7 @@ def mandarCorreo():
     host = tabla.fetchone()[0]
     bd.cerrarConexion()
     while True:
-        graficar(host,10)
+        graficar(host,6)
         time.sleep(2*60)
 
 if __name__ == '__main__':
